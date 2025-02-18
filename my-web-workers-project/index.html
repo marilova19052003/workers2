@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylessheet" href="my-web-workers-project\style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>USER</h1>
+    <img class="user-img" src="./images\fallback/user/макака.jpg" />
+
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("./server-worker.js", { scope: "./" })
+          .then((reg) => {
+            // регистрация сработала
+            console.log("Registration succeeded. Scope is " + reg.scope);
+          })
+          .catch((error) => {
+            // регистрация прошла неудачно
+            console.log("Registration failed with " + error);
+          });
+      }
+    </script>
+  </body>
+</html>
