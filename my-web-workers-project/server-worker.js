@@ -2,19 +2,29 @@ self.addEventListener("install", (event) => {
   console.log("установлен");
 
   event.waitUntil(
-    ceches.open("loved-caches").then((cache) => {
+    caches.open("loved-caches").then((cache) => {
       cache.addAll([
         "./",
-        "my-web-workers-projectindex.html",
+        "my-web-workers-project/index.html",
         "my-web-workers-projectstyle.css",
-        "my-web-workers-projectimages\fallback",
+        "my-web-workers-projectimages/fallback",
       ]);
     })
   );
 });
 
 self.addEventListener("activate", (event) => {
-  console.log("активирован");
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (cacheName !== "loved-caches") {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
 });
 
 async function cachePriorityThenFetch(event) {
@@ -29,7 +39,7 @@ async function cachePriorityThenFetch(event) {
   try {
     response = await fetch(event.request);
   } catch (error) {
-    return;
+    return new Response("Ошибка загрузки данных", { status: 408 });
   }
 
   const cache = await caches.open("loved-caches");
